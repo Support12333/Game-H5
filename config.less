@@ -1,0 +1,38 @@
+.size(@w, @h) {
+  width: @w;
+  height: @h;
+}
+
+.fj(@jc) {
+  display: flex;
+  justify-content: @jc;
+}
+
+.fa(@ai) {
+  display: flex;
+  align-items: @ai;
+}
+
+.flex(@jc, @ai) {
+  display: flex;
+  justify-content: @jc;
+  align-items: @ai;
+}
+
+// 适配主流设备
+@deviceList: 240px, 320px, 360px, 375px, 384px, 400px, 411px, 414px, 424px, 480px, 540px, 640px, 720px, 750px, 768px, 800px, 1024px, 1920px, 2048px;
+// 预设基准值
+@baseFontSize: 25px;
+// 设计稿尺寸
+@psdWidth: 375px;
+
+// 移动端适配
+.adapterMixin(@index: 1) when (@index <=length(@deviceList)) {
+  @media (min-width: extract(@deviceList, @index)) {
+    html {
+      font-size: @baseFontSize / @psdWidth * extract(@deviceList, @index);
+    }
+  }
+
+  .adapterMixin(@index + 1);
+}
