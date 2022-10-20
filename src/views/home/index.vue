@@ -44,7 +44,7 @@
                     <div class="tit">标题内容</div>
                     <div class="txt">正文内容介绍文案正文内容介绍文案正文内容介绍文案</div>
                 </div>
-                
+
             </div>
             <div class="content">
                 <div class="img"><img src="@assets/image/1.png" alt=""></div>
@@ -52,7 +52,7 @@
                     <div class="tit">标题内容</div>
                     <div class="txt">正文内容介绍文案正文内容介绍文案正文内容介绍文案</div>
                 </div>
-                
+
             </div>
             <div class="content">
                 <div class="img"><img src="@assets/image/1.png" alt=""></div>
@@ -60,7 +60,7 @@
                     <div class="tit">标题内容</div>
                     <div class="txt">正文内容介绍文案正文内容介绍文案正文内容介绍文案</div>
                 </div>
-                
+
             </div>
             <div class="content">
                 <div class="img"><img src="@assets/image/1.png" alt=""></div>
@@ -68,7 +68,7 @@
                     <div class="tit">标题内容</div>
                     <div class="txt">正文内容介绍文案正文内容介绍文案正文内容介绍文案</div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -84,8 +84,7 @@
             left: 0;
             top: 0;
             z-index: -1;
-            height: 174px;
-            width: 100%;
+            .size(100%, 174px);
             background: linear-gradient(360deg, #FFFFFF 0%, #5799F7 50%, #2B5AFA 100%);
         }
 
@@ -93,8 +92,7 @@
             padding: 49px 16px 10px;
 
             >img {
-                width: 100%;
-                height: 185px;
+                .size(100%, 185px);
             }
         }
 
@@ -102,16 +100,13 @@
 
     .business {
         padding: 0 16px;
-        display: flex;
+        .flex(center, center);
         flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
 
         .item {
             width: 33.3%;
-            display: flex;
+            .fa(center);
             flex-direction: column;
-            align-items: center;
             padding: 10px 0;
 
             >img {
@@ -150,6 +145,7 @@
         .content {
             display: flex;
             padding-top: 17px;
+
             .img {
                 >img {
                     width: 105px;
@@ -158,10 +154,10 @@
             }
 
             .text {
-                display: flex;
+                .fj(center);
                 flex-direction: column;
-                justify-content: center;
                 margin-left: 21px;
+
                 .tit {
                     font-size: 17px;
                     font-family: PingFang SC-Bold, PingFang SC;

@@ -2,11 +2,8 @@ const { defineConfig } = require('@vue/cli-service')
 const path = require('path');
 const resolve = (dir) => path.join(__dirname, dir);
 
-module.exports = defineConfig({
-  transpileDependencies: true,
-  assetsDir: 'static',
+module.exports = {
   productionSourceMap: false,
-  lintOnSave: false,
   chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('src'))
@@ -32,26 +29,17 @@ module.exports = defineConfig({
         return args
       })
     }
-    // const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
-    // types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)));
+    const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+    types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)));
   },
-  pluginOptions: {
-    "style-resources-loader": {
-      preProcessor: "less",
-      patterns: [
-        // 存放less变量文件的路径
-        path.resolve(__dirname, "./src/config.less")
-      ]
-    }
-  }
-})
+}
 
-// function addStyleResource(rule) {
-//   rule.use('style-resource')
-//     .loader('style-resources-loader')
-//     .options({
-//       patterns: [
-//         resolve('./src/config.less')
-//       ],
-//     })
-// }
+function addStyleResource(rule) {
+  rule.use('style-resource')
+    .loader('style-resources-loader')
+    .options({
+      patterns: [
+        resolve('./config.less')
+      ],
+    })
+}
