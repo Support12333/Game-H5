@@ -39,7 +39,7 @@ function addStyleResource(rule) {
     .loader('style-resources-loader')
     .options({
       patterns: [
-        resolve('./config.less')
+        resolve('./src/config.less')
       ],
     })
 }

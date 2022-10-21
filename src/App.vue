@@ -11,7 +11,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 #app {
   height: 100%;
   max-width: 750px;
@@ -58,4 +58,6 @@ img {
 ul li {
   list-style: none;
 }
+
+.adapterMixin();
 </style>
