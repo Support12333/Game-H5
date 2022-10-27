@@ -10,7 +10,8 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vant": "^3.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -22,7 +23,8 @@
     "eslint-plugin-vue": "^8.0.3",
     "less": "^3.13.1",
     "less-loader": "^7.3.0",
-    "style-resources-loader": "^1.5.0"
+    "style-resources-loader": "^1.5.0",
+    "unplugin-vue-components": "^0.22.8"
   },
   "eslintConfig": {
     "root": true,
@@ -37,7 +39,7 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "vue/multi-word-component-names":"off"
+      "vue/multi-word-component-names": "off"
     }
   },
   "browserslist": [

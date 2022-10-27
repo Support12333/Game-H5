@@ -1,9 +1,19 @@
 const { defineConfig } = require('@vue/cli-service')
+const { VantResolver } = require('unplugin-vue-components/resolvers');
+const ComponentsPlugin = require('unplugin-vue-components/webpack');
 const path = require('path');
 const resolve = (dir) => path.join(__dirname, dir);
 
 module.exports = {
   productionSourceMap: false,
+   // 配置vant组件按需加载
+  configureWebpack: {
+    plugins: [
+      ComponentsPlugin({
+        resolvers: [VantResolver()],
+      }),
+    ],
+  },
   chainWebpack: config => {
     config.resolve.alias
       .set('@', resolve('src'))
