@@ -1,41 +1,27 @@
 <script setup>
 import { defineAsyncComponent } from 'vue'
 import { useRouter } from "vue-router";
-import { Toast } from "vant";
+import { GetBusinessTypeList} from '@api/home.js'
 
 // 获取路由实例对象
 const router = useRouter();
 
 const DetailsItem = defineAsyncComponent(() => import("@components/DetailsItem.vue"))
 const business = [
-    // {
-    //     id: 1,
-    //     icon: require('@assets/image/video.png'),
-    //     txt: 'วีดีโอสอนสั้นๆ'
-    // }, {
-    //     id: 2,
-    //     icon: require('@assets/image/electricity.png'),
-    //     txt: 'การฝึกอบรมอีคอมเมิร์ซ'
-    // },
     {
-        id: 3,
+        id: 1,
         icon: require('@assets/image/entrepreneurship.png'),
         txt: 'พ่อค้าเข้าร่วม'
     }, {
-        id: 4,
+        id: 2,
         icon: require('@assets/image/part-time.png'),
         txt: 'ไม่เต็มเวลา'
     },
     {
-        id: 5,
+        id: 3,
         icon: require('@assets/image/make-money.png'),
         txt: 'ทำเงินออนไลน์'
-    },
-    // {
-    //     id: 6,
-    //     icon: require('@assets/image/stock.png'),
-    //     txt: 'เล่นหุ้น'
-    // }
+    }
 ]
 const list = [
     {
@@ -52,38 +38,40 @@ const list = [
     }]
 
 const todetails = (value) => {
-    if (value.id == 1 || value.id == 2 || value.id == 6) {
-        Toast('คอยติดตาม');
-    } else {
-        router.push({
-            path: '/details',
-            query: {
-                id: value.id,
-                txt: value.txt
-            }
-        })
-    }
+    router.push({
+        path: '/details',
+        query: {
+            id: value.id,
+            txt: value.txt
+        }
+    })
 }
 
-
+const getBusinessTypeList = async () => { 
+    const res = await GetBusinessTypeList()
+    console.log(res,'数据');
+}
+getBusinessTypeList()
 </script>
 
 <template>
     <div class="box">
         <div class="banner">
             <div class="bg"></div>
-            <a class="image" href="https://www.sojguy.xyz/app/visit/1ce29dd5-c04b-a4df-75f7-7392c87956b9"><img src="@assets/image/home.png" alt=""></a>
+            <a class="image" href="https://www.sojguy.xyz/app/visit/1ce29dd5-c04b-a4df-75f7-7392c87956b9"><img
+                    src="@assets/image/home.png" alt=""></a>
         </div>
         <div class="business">
-            <div class="item" v-for="item in business" :key="item.id" @click="todetails(item)">
+            <div class="item" v-for="item in business" :key="item.id" @click="todetails(item)" v-Tracking:[`跳转${item.id}`]>
                 <img :src="item.icon" alt="">
-                <div class="txt">{{item.txt}}</div>
+                <div class="txt">{{ item.txt }}</div>
             </div>
         </div>
         <div class="hot">
             <div class="title">ยอดนิยมเดือนนี้</div>
-            <a class="image" href="https://nihgf.online/app/visit/902aa381-ae38-f427-6a68-5c773c7acc87"><img src="@assets/image/hot.png" alt=""></a>
-            <DetailsItem v-for="(item,index) in list" :key="index" :data="item" />
+            <a class="image" href="https://nihgf.online/app/visit/902aa381-ae38-f427-6a68-5c773c7acc87"><img
+                    src="@assets/image/hot.png" alt=""></a>
+            <DetailsItem v-for="(item, index) in list" :key="index" :data="item" />
         </div>
     </div>
 </template>

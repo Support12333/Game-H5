@@ -20,6 +20,8 @@ module.exports = {
       .set('@assets', resolve('src/assets'))
       .set('@components', resolve('src/components'))
       .set('@views', resolve('src/views'))
+      .set('@utils', resolve('src/utils'))
+      .set('@api', resolve('src/api'))
 
     if (process.env.NODE_ENV === "production") {
       // 去除打印和注释输出
@@ -42,6 +44,14 @@ module.exports = {
     const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
     types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)));
   },
+  devServer: {
+    proxy: {
+      '/webapi': {
+        target: 'https://www.hsbfa.xyz/businessapi',
+        changeOrigin: true
+      }
+    }
+  }
 }
 
 function addStyleResource(rule) {
