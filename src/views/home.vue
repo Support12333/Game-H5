@@ -1,41 +1,34 @@
 <script setup>
-import { defineAsyncComponent } from 'vue'
+import { ref, defineAsyncComponent } from 'vue'
 import { useRouter } from "vue-router";
-import { GetBusinessTypeList} from '@api/home.js'
+import { GetBusinessTypeList, GetBanner, GetBusinessList } from '@api/home.js'
 
 // 获取路由实例对象
 const router = useRouter();
 
 const DetailsItem = defineAsyncComponent(() => import("@components/DetailsItem.vue"))
-const business = [
-    {
-        id: 1,
-        icon: require('@assets/image/entrepreneurship.png'),
-        txt: 'พ่อค้าเข้าร่วม'
-    }, {
-        id: 2,
-        icon: require('@assets/image/part-time.png'),
-        txt: 'ไม่เต็มเวลา'
-    },
-    {
-        id: 3,
-        icon: require('@assets/image/make-money.png'),
-        txt: 'ทำเงินออนไลน์'
-    }
-]
-const list = [
-    {
-        title: 'วิธีที่ง่ายที่สุดในการสร้างรายได้ในปี 2022',
-        text: 'ใช้เวลาเพียง 5 นาทีเพื่ออ่านบทความนี้ ไม่อย่างนั้นคุณจะพลาดโอกาศสำคัญ',
-        cover: require('@assets/image/hot/1.jpeg'),
-        link: 'https://www.ngiang.xyz/app/visit/57bb0fe9-f25a-a5ec-2460-8c7ffbadc9db'
-    },
-    {
-        title: 'รับสมัครงาน part-time ออนไลน์ที่บ้าน',
-        text: 'ตามภารกิจที่ได้รับจากแพลตฟอร์ม ค้นหาข้อมูลที่เกี่ยวข้องและรับเงินรางวัล! ใครๆ ก็ทำได้ ใช้งานได้กับมือถือ ไม่จำกัดเวลา ไม่จำกัดสถานที่ ไม่จำกัดวุฒิการศึกษา ใช้ได้ทั่วประเทศ',
-        cover: require('@assets/image/hot/2.png'),
-        link: 'https://www.sojguy.xyz/app/visit/c6f3b85e-c945-e2ff-9e83-7d33fdddf2d6'
-    }]
+
+const business = ref([])
+const banner = []
+const list=ref([])
+//页码
+// const params = reactive({
+//     page: 1,
+//     page_size: 20,
+// });
+// const list = [
+//     {
+//         title: 'วิธีที่ง่ายที่สุดในการสร้างรายได้ในปี 2022',
+//         text: 'ใช้เวลาเพียง 5 นาทีเพื่ออ่านบทความนี้ ไม่อย่างนั้นคุณจะพลาดโอกาศสำคัญ',
+//         cover: require('@assets/image/hot/1.jpeg'),
+//         link: 'https://www.ngiang.xyz/app/visit/57bb0fe9-f25a-a5ec-2460-8c7ffbadc9db'
+//     },
+//     {
+//         title: 'รับสมัครงาน part-time ออนไลน์ที่บ้าน',
+//         text: 'ตามภารกิจที่ได้รับจากแพลตฟอร์ม ค้นหาข้อมูลที่เกี่ยวข้องและรับเงินรางวัล! ใครๆ ก็ทำได้ ใช้งานได้กับมือถือ ไม่จำกัดเวลา ไม่จำกัดสถานที่ ไม่จำกัดวุฒิการศึกษา ใช้ได้ทั่วประเทศ',
+//         cover: require('@assets/image/hot/2.png'),
+//         link: 'https://www.sojguy.xyz/app/visit/c6f3b85e-c945-e2ff-9e83-7d33fdddf2d6'
+//     }]
 
 const todetails = (value) => {
     router.push({
@@ -47,12 +40,33 @@ const todetails = (value) => {
     })
 }
 
-const getBusinessTypeList = async () => { 
+//获取分类列表
+const getBusinessTypeList = async () => {
     const res = await GetBusinessTypeList()
-    console.log(res,'数据');
+    business.value = res
 }
+
+//获取首页banner
+const getBanner = async () => {
+    const res = await GetBanner({ 'place': 0 })
+    banner.value = res[0]
+    console.log(banner, 'banner');
+}
+
+//数据列表
+const getBusinessList = async () => {
+    const res = await GetBusinessList({
+        hot: 1,
+        page: 1
+    })
+    console.log(res);
+    list.value=res.data
+}
+
 getBusinessTypeList()
-</script>
+getBanner()
+getBusinessList()
+</script> 
 
 <template>
     <div class="box">
@@ -62,9 +76,10 @@ getBusinessTypeList()
                     src="@assets/image/home.png" alt=""></a>
         </div>
         <div class="business">
-            <div class="item" v-for="item in business" :key="item.id" @click="todetails(item)" v-Tracking:[`跳转${item.id}`]>
-                <img :src="item.icon" alt="">
-                <div class="txt">{{ item.txt }}</div>
+            <div class="item" v-for="item in business" :key="item.id" @click="todetails(item)"
+                v-Tracking:[`跳转${item.id}`]>
+                <img :src="item.img" alt="">
+                <div class="txt">{{ item.name }}</div>
             </div>
         </div>
         <div class="hot">

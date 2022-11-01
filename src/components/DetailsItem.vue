@@ -1,9 +1,9 @@
 <template>
     <div class="content" @click="tolink">
-        <div class="img"><img :src="data.cover" alt=""></div>
+        <div class="img"><img :src="data.img" alt=""></div>
         <div class="text">
             <div class="tit">{{data.title}}</div>
-            <div class="txt">{{data.text}}</div>
+            <div class="txt">{{data.content}}</div>
         </div>
     </div>
 </template>

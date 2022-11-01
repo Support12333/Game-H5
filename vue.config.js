@@ -4,7 +4,7 @@ const ComponentsPlugin = require('unplugin-vue-components/webpack');
 const path = require('path');
 const resolve = (dir) => path.join(__dirname, dir);
 
-module.exports = {
+module.exports = defineConfig({
   productionSourceMap: false,
    // 配置vant组件按需加载
   configureWebpack: {
@@ -46,13 +46,13 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/webapi': {
-        target: 'https://www.hsbfa.xyz/businessapi',
+      '/businessapi': {
+        target: 'http://www.hsbfa.xyz',
         changeOrigin: true
       }
     }
   }
-}
+})
 
 function addStyleResource(rule) {
   rule.use('style-resource')
