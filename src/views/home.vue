@@ -18,7 +18,7 @@ const _todetails = (value) => {
         path: '/details',
         query: {
             id: value.id,
-            txt: value.name
+            name: value.name
         }
     })
 }
