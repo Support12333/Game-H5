@@ -65,18 +65,20 @@ getBusinessList()
     <div class="box">
         <div class="banner">
             <div class="bg"></div>
-            <a class="image" v-for="item in banner" :key="item.id" :href="item.link" v-Tracking:[`点击${item.title}`]><img :src="item.img" alt=""></a>
+            <a class="image" v-for="item in banner" :key="item.id" :href="item.link" v-Tracking:[`点击${item.title}`]><img
+                    :src="item.img" alt=""></a>
         </div>
-        <div class="business">
-            <div class="item" v-for="item in business" :key="item.id"
+        <van-row class="business">
+            <van-col span="8" class="item" v-for="item in business" :key="item.id"
                 v-Tracking:[`跳转${item.poskey}`]="() => _todetails(item)">
                 <img :src="item.img" alt="">
                 <div class="txt">{{ item.name }}</div>
-            </div>
-        </div>
+            </van-col>
+        </van-row>
         <div class="hot">
             <div class="title">ยอดนิยมเดือนนี้</div>
-            <a class="image" v-for="item in hotbanner" :key="item.id" :href="item.link" v-Tracking:[`点击${item.title}`]><img :src="item.img" alt=""></a>
+            <a class="image" v-for="item in hotbanner" :key="item.id" :href="item.link"
+                v-Tracking:[`点击${item.title}`]><img :src="item.img" alt=""></a>
             <DetailsItem v-for="(item, index) in list" :key="index" :data="item" />
         </div>
     </div>
