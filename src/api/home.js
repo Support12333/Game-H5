@@ -2,28 +2,39 @@ import fetch from '../server/index'
 /**
  * @method 分类列表
  */
- export const GetBusinessTypeList = () => fetch({
-    url: '/businesstypelist',
-    method: 'POST',
- })
-  
- /**
- * @method 分类列表
- * @param {String} data.place - banner位置
- */
-  export const GetBanner = (data) => fetch({
-    url: '/banner',
-    method: 'POST',
-    data
-  })
+export const GetBusinessTypeList = () => fetch({
+  url: '/businesstypelist',
+  method: 'POST',
+})
 
-  /**
- * @method 列表数据
- * @param {String} data.joininvestmenttype - 分类id
- * @param {String} data.page  - 页码
- */
-   export const GetBusinessList = (data) => fetch({
-    url: '/businesslist',
-    method: 'POST',
-    data
-  })
+/**
+* @method 分类列表
+* @param {String} data.place - banner位置
+*/
+export const GetBanner = (data) => fetch({
+  url: '/banner',
+  method: 'POST',
+  data
+})
+
+/**
+* @method 列表数据
+* @param {String} data.joininvestmenttype - 分类id
+* @param {String} data.hot - 分类id
+* @param {String} data.page  - 页码
+*/
+export const GetBusinessList = (data) => fetch({
+  url: '/businesslist',
+  method: 'POST',
+  data
+})
+
+/**
+* @method 埋点
+* @param {String} data.source - 操作描述
+*/
+export const GetBehaviour = (data) => fetch({
+  url: '/behaviour',
+  method: 'POST',
+  data
+})

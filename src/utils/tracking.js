@@ -1,7 +1,7 @@
-import { EventTracking } from '@api/config'
+import { GetBehaviour } from '@api/home.js'
 
 export default (txt) => {
-  EventTracking({
-    location: txt
+  GetBehaviour({
+    source: txt
   })
 }

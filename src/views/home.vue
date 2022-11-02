@@ -9,33 +9,16 @@ const router = useRouter();
 const DetailsItem = defineAsyncComponent(() => import("@components/DetailsItem.vue"))
 
 const business = ref([])
-const banner = []
-const list=ref([])
-//页码
-// const params = reactive({
-//     page: 1,
-//     page_size: 20,
-// });
-// const list = [
-//     {
-//         title: 'วิธีที่ง่ายที่สุดในการสร้างรายได้ในปี 2022',
-//         text: 'ใช้เวลาเพียง 5 นาทีเพื่ออ่านบทความนี้ ไม่อย่างนั้นคุณจะพลาดโอกาศสำคัญ',
-//         cover: require('@assets/image/hot/1.jpeg'),
-//         link: 'https://www.ngiang.xyz/app/visit/57bb0fe9-f25a-a5ec-2460-8c7ffbadc9db'
-//     },
-//     {
-//         title: 'รับสมัครงาน part-time ออนไลน์ที่บ้าน',
-//         text: 'ตามภารกิจที่ได้รับจากแพลตฟอร์ม ค้นหาข้อมูลที่เกี่ยวข้องและรับเงินรางวัล! ใครๆ ก็ทำได้ ใช้งานได้กับมือถือ ไม่จำกัดเวลา ไม่จำกัดสถานที่ ไม่จำกัดวุฒิการศึกษา ใช้ได้ทั่วประเทศ',
-//         cover: require('@assets/image/hot/2.png'),
-//         link: 'https://www.sojguy.xyz/app/visit/c6f3b85e-c945-e2ff-9e83-7d33fdddf2d6'
-//     }]
+const banner = ref([])
+const hotbanner = ref([])
+const list = ref([])
 
-const todetails = (value) => {
+const _todetails = (value) => {
     router.push({
         path: '/details',
         query: {
             id: value.id,
-            txt: value.txt
+            txt: value.name
         }
     })
 }
@@ -48,9 +31,18 @@ const getBusinessTypeList = async () => {
 
 //获取首页banner
 const getBanner = async () => {
-    const res = await GetBanner({ 'place': 0 })
-    banner.value = res[0]
-    console.log(banner, 'banner');
+    const res = await GetBanner({
+        place: 0,
+    })
+    banner.value = res
+}
+
+//获取热门banner
+const gethotBanner = async () => {
+    const res = await GetBanner({
+        hot: 1
+    })
+    hotbanner.value = res
 }
 
 //数据列表
@@ -59,33 +51,32 @@ const getBusinessList = async () => {
         hot: 1,
         page: 1
     })
-    console.log(res);
-    list.value=res.data
+    list.value = res.data
 }
 
 getBusinessTypeList()
 getBanner()
+gethotBanner()
 getBusinessList()
+
 </script> 
 
 <template>
     <div class="box">
         <div class="banner">
             <div class="bg"></div>
-            <a class="image" href="https://www.sojguy.xyz/app/visit/1ce29dd5-c04b-a4df-75f7-7392c87956b9"><img
-                    src="@assets/image/home.png" alt=""></a>
+            <a class="image" v-for="item in banner" :key="item.id" :href="item.link" v-Tracking:[`点击${item.title}`]><img :src="item.img" alt=""></a>
         </div>
         <div class="business">
-            <div class="item" v-for="item in business" :key="item.id" @click="todetails(item)"
-                v-Tracking:[`跳转${item.id}`]>
+            <div class="item" v-for="item in business" :key="item.id"
+                v-Tracking:[`跳转${item.poskey}`]="() => _todetails(item)">
                 <img :src="item.img" alt="">
                 <div class="txt">{{ item.name }}</div>
             </div>
         </div>
         <div class="hot">
             <div class="title">ยอดนิยมเดือนนี้</div>
-            <a class="image" href="https://nihgf.online/app/visit/902aa381-ae38-f427-6a68-5c773c7acc87"><img
-                    src="@assets/image/hot.png" alt=""></a>
+            <a class="image" v-for="item in hotbanner" :key="item.id" :href="item.link" v-Tracking:[`点击${item.title}`]><img :src="item.img" alt=""></a>
             <DetailsItem v-for="(item, index) in list" :key="index" :data="item" />
         </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="content" @click="tolink">
+    <div class="content" v-Tracking:[`点击数据id为${data.id}的落地页`]="() => tolink()">
         <div class="img"><img :src="data.img" alt=""></div>
         <div class="text">
             <div class="tit">{{data.title}}</div>

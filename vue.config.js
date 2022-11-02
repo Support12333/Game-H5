@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const { defineConfig } = require('@vue/cli-service')
 const { VantResolver } = require('unplugin-vue-components/resolvers');
 const ComponentsPlugin = require('unplugin-vue-components/webpack');
@@ -6,13 +7,22 @@ const resolve = (dir) => path.join(__dirname, dir);
 
 module.exports = defineConfig({
   productionSourceMap: false,
-   // 配置vant组件按需加载
   configureWebpack: {
+    // 配置vant组件按需加载
     plugins: [
       ComponentsPlugin({
         resolvers: [VantResolver()],
       }),
-    ],
+
+      // 配置全局对象或方法
+      new webpack.ProvidePlugin({
+        /**
+         * @type {Function}
+         * @description 埋点事件
+         */
+        Tracking: ['@utils/tracking.js', 'default'],
+      })
+    ]
   },
   chainWebpack: config => {
     config.resolve.alias
