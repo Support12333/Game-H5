@@ -1,6 +1,18 @@
 <script>
+import { Dialog } from 'vant';
+
 export default {
-   setup() {
+   created() {
+      Dialog.confirm({
+         title: '标题',
+         message: '弹窗内容',
+      })
+         .then(() => {
+            // on confirm
+         })
+         .catch(() => {
+            // on cancel
+         });
 
    },
 };
@@ -170,9 +182,10 @@ export default {
       }
 
       .banner {
-         .van-swipe{
+         .van-swipe {
             margin: 0 -8px;
          }
+
          .van-swipe-item {
             margin: 0 8px;
          }
@@ -215,6 +228,7 @@ export default {
 
             .details {
                margin-left: 8px;
+
                .tit {
                   font-family: PingFang SC;
                   font-size: 14px;
