@@ -1,9 +1,7 @@
-<script>
-export default {
-   setup() {
+<script setup>
+import { defineAsyncComponent } from 'vue'
 
-   },
-};
+const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
 </script>
 
 <template>
@@ -96,6 +94,7 @@ export default {
             </div>
          </div>
       </div>
+      <Dialog></Dialog>
    </div>
 </template>
 
@@ -170,9 +169,10 @@ export default {
       }
 
       .banner {
-         .van-swipe{
+         .van-swipe {
             margin: 0 -8px;
          }
+
          .van-swipe-item {
             margin: 0 8px;
          }
@@ -214,7 +214,8 @@ export default {
             }
 
             .details {
-               margin-left: 8px;
+               padding: 0 16px 0 8px;
+
                .tit {
                   font-family: PingFang SC;
                   font-size: 14px;
@@ -231,6 +232,10 @@ export default {
                      width: 16px;
                      height: 16px;
                      border-radius: 50%;
+                  }
+
+                  >img+img {
+                     margin-left: -4px;
                   }
 
                   span {
