@@ -1,5 +1,6 @@
 import axios from 'axios'
-// import { Toast } from 'vant'
+import { showToast } from 'vant'
+import "vant/lib/toast/style/index"
 
 const fetch = axios.create({
     baseURL: '/apis',
@@ -16,7 +17,7 @@ fetch.interceptors.response.use(
         return Promise.reject(new Error(msg))
     },
     error => {
-        // Toast.fail(error.message)
+        showToast.fail(error.data)
         return Promise.reject(error)
     }
 )

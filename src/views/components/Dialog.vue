@@ -1,6 +1,7 @@
 <script setup>
+import "vant/lib/toast/style/index"
 import { ref, reactive, onBeforeUnmount } from 'vue';
-// import { Toast } from 'vant'
+import { showToast } from 'vant'
 import { SendInfo, RegisterUser, LoginUser } from '@/api/user'
 const show = ref(true);
 const showornot = ref("password");
@@ -65,26 +66,30 @@ const open = () => {
 
 //获取验证码
 const sendVerifyCode = () => {
-    // if (!params.account) {
-    //     return Toast('请输入手机号或邮箱！');
-    // }
-    SendInfo({
-        account: params.account,
-        type: 1,
-        languageType: 1
-    }).then(() => {
-        Iscode.value = true
-        countDown.time = 30;
-        countDown.interval = setInterval(() => {
-            if (countDown.time == 0) {
-                clearInterval(countDown.interval);
-                countDown.interval = null;
-                Iscode.value = false
-            } else {
-                countDown.time--;
-            }
-        }, 1000);
-    })
+    if (!params.account) {
+        showToast("提示内容")
+        console.log(123, 'xxxx')
+
+    } else {
+        SendInfo({
+            account: params.account,
+            type: 1,
+            languageType: 1
+        }).then(() => {
+            Iscode.value = true
+            countDown.time = 30;
+            countDown.interval = setInterval(() => {
+                if (countDown.time == 0) {
+                    clearInterval(countDown.interval);
+                    countDown.interval = null;
+                    Iscode.value = false
+                } else {
+                    countDown.time--;
+                }
+            }, 1000);
+        })
+    }
+
 }
 
 //提交登录注册
@@ -378,5 +383,9 @@ onBeforeUnmount(() => {
             }
         }
     }
+}
+
+.particulars-detail-popup {
+    background: rgba(0, 0, 0, 0.7) !important;
 }
 </style>

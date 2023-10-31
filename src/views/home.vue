@@ -1,5 +1,23 @@
+<<<<<<< HEAD
 <script setup>
 import { defineAsyncComponent } from 'vue'
+=======
+<script>
+import { Dialog } from 'vant';
+
+export default {
+   created() {
+      Dialog.confirm({
+         title: '标题',
+         message: '弹窗内容',
+      })
+         .then(() => {
+            // on confirm
+         })
+         .catch(() => {
+            // on cancel
+         });
+>>>>>>> 6f35add37fc4c0c0e34544daea11f98fb6d1aa52
 
 const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
 </script>
@@ -214,7 +232,11 @@ const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
             }
 
             .details {
+<<<<<<< HEAD
                padding: 0 16px 0 8px;
+=======
+               margin-left: 8px;
+>>>>>>> 6f35add37fc4c0c0e34544daea11f98fb6d1aa52
 
                .tit {
                   font-family: PingFang SC;
