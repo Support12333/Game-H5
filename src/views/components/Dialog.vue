@@ -2,7 +2,7 @@
 import "vant/lib/toast/style/index"
 import { ref, reactive, onBeforeUnmount } from 'vue';
 import { showToast } from 'vant'
-import { SendInfo, RegisterUser, LoginUser } from '@/api/user'
+import { SendInfo,RegisterUser, LoginUser } from '@/api/user'
 const show = ref(true);
 const showornot = ref("password");
 
@@ -23,10 +23,13 @@ const countDown = reactive({
 
 //验证码是否显示
 const code = ref(false)
-let Iscode = ref(false)
+// const Iscode = ref(false)
+let IsCountDown = ref(false)
 let checked = ref(false)
 let iSopen = ref(false)
 const isActive = ref(1)
+//账户类型
+// const loginType = ref('')
 
 //点击切换登陆 
 const login = () => {
@@ -64,25 +67,40 @@ const open = () => {
     }
 }
 
+//是否是邮箱
+// const validateAccount = () => {
+//     if (params.account.includes('@')) {
+//         if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(params.account)) {
+//             Iscode.value = false
+//             return showToast('请输入正确的邮箱！')
+//         }
+//         loginType.value = 2
+//     } else {
+//         loginType.value = 1
+//     }
+//     Iscode.value = true
+// }
+
 //获取验证码
 const sendVerifyCode = () => {
     if (!params.account) {
-        showToast("提示内容")
-        console.log(123, 'xxxx')
+        showToast("请输入账号！")
 
     } else {
+        // validateAccount()
+        // console.log(111);
         SendInfo({
             account: params.account,
             type: 1,
             languageType: 1
         }).then(() => {
-            Iscode.value = true
+            IsCountDown.value = true
             countDown.time = 30;
             countDown.interval = setInterval(() => {
                 if (countDown.time == 0) {
                     clearInterval(countDown.interval);
                     countDown.interval = null;
-                    Iscode.value = false
+                    IsCountDown.value = false
                 } else {
                     countDown.time--;
                 }
@@ -95,9 +113,7 @@ const sendVerifyCode = () => {
 //提交登录注册
 const onSubmit = (values) => {
     if (!checked.value) {
-        // return Toast('请勾选隐私政策！');
-        console.log('请勾选隐私政策！');
-        return
+        return showToast('请勾选隐私政策！');
     }
 
     //1 为登入 2为注册
@@ -110,9 +126,6 @@ const onSubmit = (values) => {
             gameId: 1,
             carrierId: 1
         }).then(res => {
-            // if (res.code != 1000) {
-            //     return Toast(res.data);
-            // }
             show.value = false
             console.log(res, '登陆成功');
         })
@@ -126,9 +139,7 @@ const onSubmit = (values) => {
             gameId: 1,
             carrierId: 1
         }).then(res => {
-            if (res.code != 1000) {
-                // return Toast(res.data);
-            }
+            show.value = false
             console.log(res);
         })
         console.log('Registed.....')
@@ -171,7 +182,8 @@ onBeforeUnmount(() => {
                             <div class="code">
                                 <van-field name="验证码" v-model="params.code" />
 
-                                <div class="countdown" v-if="Iscode"><img src="../../assets/icon/close.png" alt="">Resend
+                                <div class="countdown" v-if="IsCountDown"><img src="../../assets/icon/close.png"
+                                        alt="">Resend
                                     ({{ countDown.time }}s)
                                 </div>
                                 <div class="tips" v-else @click="sendVerifyCode">get verification code</div>

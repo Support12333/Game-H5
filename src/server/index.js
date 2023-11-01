@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { showToast } from 'vant'
+import { showFailToast } from 'vant'
 import "vant/lib/toast/style/index"
 
 const fetch = axios.create({
@@ -13,11 +13,12 @@ fetch.interceptors.response.use(
         if (code === 1000) {
             return data
         }
-        // Toast.fail(msg)
+        showFailToast(msg)
         return Promise.reject(new Error(msg))
     },
     error => {
-        showToast.fail(error.data)
+        console.log(error,'拦截器');
+        showFailToast(error.msg)
         return Promise.reject(error)
     }
 )

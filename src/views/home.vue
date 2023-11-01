@@ -1,25 +1,26 @@
-<<<<<<< HEAD
 <script setup>
-import { defineAsyncComponent } from 'vue'
-=======
-<script>
-import { Dialog } from 'vant';
-
-export default {
-   created() {
-      Dialog.confirm({
-         title: '标题',
-         message: '弹窗内容',
-      })
-         .then(() => {
-            // on confirm
-         })
-         .catch(() => {
-            // on cancel
-         });
->>>>>>> 6f35add37fc4c0c0e34544daea11f98fb6d1aa52
+import { defineAsyncComponent, onMounted, ref } from 'vue'
+import { GetHomeGame } from '@/api/home'
 
 const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
+
+const gameList = ref([])
+const gameBannerList = ref([])
+const swiperIdx = ref(0)
+
+onMounted(() => {
+   GetHomeGame().then(res => {
+      gameList.value = res[2].gameVoList
+      gameBannerList.value = res[1].gameVoList
+   })
+})
+
+const onChange = (index) => {
+   if (gameBannerList.value.length > 0) {
+      swiperIdx.value = index
+   }
+};
+
 </script>
 
 <template>
@@ -31,29 +32,27 @@ const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
          </div>
          <div class="introduce">
             <div>
-               <div class="tit">Sheep got a sheep</div>
-               <div class="txt">Games popular in Asia with over 1.5 billion people playing</div>
+               <div class="tit">{{ gameBannerList[swiperIdx]?.gameName }}</div>
+               <div class="txt">{{ gameBannerList[swiperIdx]?.gameDesc }}</div>
             </div>
             <div class="btn">
-               <div class="btntext">Enter</div>
+               <div class="btntext"><a :href="gameBannerList[swiperIdx]?.gamePath+`?gameID=${gameBannerList[swiperIdx]?.id}&userID=${gameBannerList[swiperIdx]?.createId}`">Enter</a></div>
             </div>
          </div>
          <div class="banner">
-            <van-swipe class="my-swipe" :loop="false" :width="280" :show-indicators="false">
-               <van-swipe-item><img src="../assets/image/banner.png" alt=""></van-swipe-item>
-               <van-swipe-item><img src="../assets/image/banner.png" alt=""></van-swipe-item>
-               <van-swipe-item><img src="../assets/image/banner.png" alt=""></van-swipe-item>
-               <van-swipe-item><img src="../assets/image/banner.png" alt=""></van-swipe-item>
+            <van-swipe class="my-swipe" :loop="false" :width="280" :show-indicators="false" @change="onChange">
+               <van-swipe-item v-for="(item, index) in gameBannerList" :key="index"><img :src="item.gameImg"
+                     alt=""></van-swipe-item>
             </van-swipe>
          </div>
       </div>
       <div class="gamelist">
          <div class="title">Everyone is playing</div>
          <div class="centent">
-            <div class="item">
-               <div class="master-map"><img src="../assets/image/dd.webp" alt=""></div>
+            <div class="item" v-for="(item, index) in gameList" :key="index">
+               <div class="master-map"><img :src="item.gameLogo" alt=""></div>
                <div class="details">
-                  <div class="tit">Fruit Xiaoxiaole</div>
+                  <div class="tit">{{ item.gameName }}</div>
                   <div class="desc">
                      <img src="../assets/image/dd.webp" alt="">
                      <img src="../assets/image/dd.webp" alt="">
@@ -62,52 +61,7 @@ const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
                   </div>
                </div>
                <div class="enter">
-                  <div class="text">Enter</div>
-               </div>
-            </div>
-            <div class="item">
-               <div class="master-map"><img src="../assets/image/dd.webp" alt=""></div>
-               <div class="details">
-                  <div class="tit">Fruit Xiaoxiaole</div>
-                  <div class="desc">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <span>9527friends are playing</span>
-                  </div>
-               </div>
-               <div class="enter">
-                  <div class="text">Enter</div>
-               </div>
-            </div>
-            <div class="item">
-               <div class="master-map"><img src="../assets/image/dd.webp" alt=""></div>
-               <div class="details">
-                  <div class="tit">Fruit Xiaoxiaole</div>
-                  <div class="desc">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <span>9527friends are playing</span>
-                  </div>
-               </div>
-               <div class="enter">
-                  <div class="text">Enter</div>
-               </div>
-            </div>
-            <div class="item">
-               <div class="master-map"><img src="../assets/image/dd.webp" alt=""></div>
-               <div class="details">
-                  <div class="tit">Fruit Xiaoxiaole</div>
-                  <div class="desc">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <span>9527friends are playing</span>
-                  </div>
-               </div>
-               <div class="enter">
-                  <div class="text">Enter</div>
+                  <div class="text"><a :href="item.gamePath">Enter</a></div>
                </div>
             </div>
          </div>
@@ -182,6 +136,9 @@ const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
                text-align: center;
                font-weight: 600;
                color: rgba(255, 255, 255, 1);
+               a{
+                  display: block;
+               }
             }
          }
       }
@@ -232,11 +189,7 @@ const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
             }
 
             .details {
-<<<<<<< HEAD
                padding: 0 16px 0 8px;
-=======
-               margin-left: 8px;
->>>>>>> 6f35add37fc4c0c0e34544daea11f98fb6d1aa52
 
                .tit {
                   font-family: PingFang SC;
@@ -285,6 +238,10 @@ const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
                   font-weight: 400;
                   color:
                      rgba(56, 104, 255, 1);
+
+                  a {
+                     display: block;
+                  }
                }
             }
          }
