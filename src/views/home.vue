@@ -3,13 +3,30 @@ import { defineAsyncComponent, onMounted, ref } from 'vue'
 import { GetHomeGame } from '@/api/home'
 
 const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
-
+//是否显示登陆注册弹窗
+const isShowDialog = ref(false)
+//当前游戏信息
+const currentData = ref({})
+const userAvatar=ref('')
 const gameList = ref([])
 const gameBannerList = ref([])
 const swiperIdx = ref(0)
+const isLoading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+// const gameVoList = ref([]);
+// const defaultPageSize = 5
+// const params = ref({
+//    homeType: 2,
+//    page: 1,
+//    pageSize: defaultPageSize
+// })
 
+//获取数据
 onMounted(() => {
-   GetHomeGame().then(res => {
+   userAvatar.value=localStorage.getItem('userImg')
+   GetHomeGame({}).then(res => {
+      // console.log(res);
       gameList.value = res[2].gameVoList
       gameBannerList.value = res[1].gameVoList
    })
@@ -21,6 +38,56 @@ const onChange = (index) => {
    }
 };
 
+// const GetGameList = async () => {
+//    // try {
+//    //    gameVoList.value = [];
+//    //    const DataList = await GetHomeGame(params.value);
+//    //    console.log(DataList);
+//    //    const { data } = DataList;
+//    //    if (data.page > page) {
+//    //       page.value += 1;
+//    //    } else {
+//    //       finished.value = true;
+//    //    }
+//    //    gameVoList.value.push(...data.homeType[homeType]);
+//    // } catch (error) {
+//    //    console.error(error);
+//    // } finally {
+//    //    isLoading.value = false;
+//    //    refreshing.value = false;
+//    // }
+// };
+
+// const GetGameList = async () => {
+//    try {
+//       const res = await GetHomeGame(params.value);
+//       console.log(res);
+//       if (res[2].) { 
+
+//       }
+//    } catch (error) {
+//       console.log(1);
+//    }
+// }
+
+const onRefresh = () => {
+   // isLoading.value = true;
+   // GetGameList();
+};
+
+const onLoad = () => {
+   // GetGameList();
+};
+
+//点击游戏
+const Islogin = (data) => {
+   currentData.value = data
+   if (localStorage.getItem('userId')) {
+      window.location.href = gameBannerList.value[swiperIdx.value]?.gamePath + `?gameID=${gameBannerList.value[swiperIdx.value]?.id}&userID=${localStorage.getItem('userId')}`
+   } else {
+      isShowDialog.value = true
+   }
+}
 </script>
 
 <template>
@@ -28,15 +95,17 @@ const onChange = (index) => {
       <div class="box-up">
          <div class="header">
             <div class="title">recommend</div>
-            <div class="avatar"><img src="../assets/image/dd.webp" alt=""></div>
+            <div class="avatar"><img :src="userAvatar==''?'../assets/image/dd.webp'||userAvatar" alt=""></div>
          </div>
          <div class="introduce">
             <div>
                <div class="tit">{{ gameBannerList[swiperIdx]?.gameName }}</div>
                <div class="txt">{{ gameBannerList[swiperIdx]?.gameDesc }}</div>
             </div>
-            <div class="btn">
-               <div class="btntext"><a :href="gameBannerList[swiperIdx]?.gamePath+`?gameID=${gameBannerList[swiperIdx]?.id}&userID=${gameBannerList[swiperIdx]?.createId}`">Enter</a></div>
+            <div class="btn" @click="Islogin(gameBannerList[swiperIdx])">
+               <div class="btntext">
+                  Enter
+               </div>
             </div>
          </div>
          <div class="banner">
@@ -49,24 +118,27 @@ const onChange = (index) => {
       <div class="gamelist">
          <div class="title">Everyone is playing</div>
          <div class="centent">
-            <div class="item" v-for="(item, index) in gameList" :key="index">
-               <div class="master-map"><img :src="item.gameLogo" alt=""></div>
-               <div class="details">
-                  <div class="tit">{{ item.gameName }}</div>
-                  <div class="desc">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <img src="../assets/image/dd.webp" alt="">
-                     <span>9527friends are playing</span>
+            <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+               <van-list v-model:loading="isLoading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+                  <div class="item" v-for="(item, index) in gameList" :key="index">
+                     <div class="master-map"><img :src="item.gameLogo" alt=""></div>
+                     <div class="details">
+                        <div class="tit">{{ item.gameName }}</div>
+                        <div class="desc">
+                           <img src="../assets/image/dd.webp" alt="">
+                           <img src="../assets/image/dd.webp" alt="">
+                           <img src="../assets/image/dd.webp" alt="">
+                           <span>9527friends are playing</span>
+                        </div>
+                     </div>
+                     <div class="enter">
+                        <div class="text"><a :href="item.gamePath">Enter</a></div>
+                     </div>
                   </div>
-               </div>
-               <div class="enter">
-                  <div class="text"><a :href="item.gamePath">Enter</a></div>
-               </div>
-            </div>
+               </van-list></van-pull-refresh>
          </div>
       </div>
-      <Dialog></Dialog>
+      <Dialog v-model:show="isShowDialog" :currentData="currentData"></Dialog>
    </div>
 </template>
 
@@ -136,7 +208,8 @@ const onChange = (index) => {
                text-align: center;
                font-weight: 600;
                color: rgba(255, 255, 255, 1);
-               a{
+
+               a {
                   display: block;
                }
             }

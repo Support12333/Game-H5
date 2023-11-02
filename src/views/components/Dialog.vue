@@ -1,9 +1,8 @@
 <script setup>
 import "vant/lib/toast/style/index"
-import { ref, reactive, onBeforeUnmount } from 'vue';
+import { ref, reactive, onBeforeUnmount, defineProps, watch, defineEmits } from 'vue';
 import { showToast } from 'vant'
-import { SendInfo,RegisterUser, LoginUser } from '@/api/user'
-const show = ref(true);
+import { SendInfo, RegisterUser, LoginUser } from '@/api/user'
 const showornot = ref("password");
 
 const params = reactive({
@@ -15,6 +14,39 @@ const params = reactive({
     password: "",
 })
 
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false,
+    },
+    currentData: {
+        type: Object,
+        default: () => { }
+    }
+})
+
+const Show = ref(props.show);
+
+// 监听父组件的值，同步给当前组件的值
+watch(
+    () => props.show,
+    () => {
+        Show.value = props.show;
+    }
+);
+
+// 监听当前组件的值，回调给父组件
+watch(
+    () => Show.value,
+    () => {
+        emit("update:show", Show.value);
+    },
+    {
+        immediate: true,
+    }
+);
+
+const emit = defineEmits(["update:show", "success"]);
 // 倒计时对象
 const countDown = reactive({
     time: 0,
@@ -112,10 +144,11 @@ const sendVerifyCode = () => {
 
 //提交登录注册
 const onSubmit = (values) => {
+    console.log(props.currentData);
     if (!checked.value) {
         return showToast('请勾选隐私政策！');
     }
-
+    console.log(123);
     //1 为登入 2为注册
     if (isActive.value == 1) {
         LoginUser({
@@ -123,10 +156,13 @@ const onSubmit = (values) => {
             password: params.password,
             verifyCode: '',
             signTypeId: 1,
-            gameId: 1,
-            carrierId: 1
+            gameId: props.currentData.id,
+            carrierId: props.currentData.carrierId
         }).then(res => {
-            show.value = false
+            localStorage.setItem("gameData", JSON.stringify(props.currentData))
+            localStorage.setItem("userId", res.id)
+            localStorage.setItem("userImg", res.userImg)
+            Show.value = false
             console.log(res, '登陆成功');
         })
         console.log('login.....')
@@ -136,10 +172,10 @@ const onSubmit = (values) => {
             password: params.password,
             verifyCode: params.code,
             signTypeId: 1,
-            gameId: 1,
-            carrierId: 1
+            gameId: props.currentData.id,
+            carrierId: props.currentData.carrierId
         }).then(res => {
-            show.value = false
+            Show.value = false
             console.log(res);
         })
         console.log('Registed.....')
@@ -159,7 +195,7 @@ onBeforeUnmount(() => {
 
 <template>
     <div>
-        <van-dialog v-model:show="show" class="main" :showConfirmButton="false" :showCancelButton="false">
+        <van-dialog v-model:show="Show" class="main" :showConfirmButton="false" :showCancelButton="false">
             <div class="centent">
                 <div class="title">
                     <span @click="login" :class="isActive == 1 ? 'active' : ''">Login</span>

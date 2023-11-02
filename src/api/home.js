@@ -2,9 +2,10 @@ import fetch from '../server/index'
 /**
  * @method 分类列表
  */
-export const GetHomeGame = () => fetch({
+export const GetHomeGame = (data) => fetch({
   url: '/app/game/getHomeGame',
-  method: 'GET',
+  method: 'POST',
+  data
 })
 
 /**

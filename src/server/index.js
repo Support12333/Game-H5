@@ -11,6 +11,7 @@ fetch.interceptors.response.use(
     response => {
         const { code, msg, data } = response.data
         if (code === 1000) {
+            data.code = code
             return data
         }
         showFailToast(msg)
