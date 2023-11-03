@@ -13,7 +13,7 @@ export const GetHomeGame = (data) => fetch({
 * @param {String} data.source - 操作描述
 */
 export const GetBehaviour = (data) => fetch({
-  url: '/behaviour',
+  url: '/app/game/addGameNum',
   method: 'POST',
   data
 })

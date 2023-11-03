@@ -1,89 +1,96 @@
 <script setup>
 import { defineAsyncComponent, onMounted, ref } from 'vue'
-import { GetHomeGame } from '@/api/home'
-
+import { GetHomeGame, GetBehaviour } from '@/api/home'
 const Dialog = defineAsyncComponent(() => import("./components/Dialog.vue"))
 //是否显示登陆注册弹窗
 const isShowDialog = ref(false)
 //当前游戏信息
 const currentData = ref({})
-const userAvatar=ref('')
+//登陆后获取的头像
+const userAvatar = ref('')
+//默认头像
+const defaultavatar=ref(require('@assets/image/dd.webp'))
 const gameList = ref([])
 const gameBannerList = ref([])
 const swiperIdx = ref(0)
 const isLoading = ref(false);
 const finished = ref(false);
-const refreshing = ref(false);
-// const gameVoList = ref([]);
-// const defaultPageSize = 5
-// const params = ref({
-//    homeType: 2,
-//    page: 1,
-//    pageSize: defaultPageSize
-// })
+const defaultPageSize = 8
+const params = ref({
+   homeType: 2,
+   page: 1,
+   pageSize: defaultPageSize
+})
 
 //获取数据
 onMounted(() => {
-   userAvatar.value=localStorage.getItem('userImg')
+   userAvatar.value = localStorage.getItem('userImg')
    GetHomeGame({}).then(res => {
-      // console.log(res);
-      gameList.value = res[2].gameVoList
       gameBannerList.value = res[1].gameVoList
    })
 })
+const getRandomInt = () => {
+   return Math.floor(Math.random() * (9000 - 500 + 1)) + 500;
+}
 
+//切换轮播
 const onChange = (index) => {
    if (gameBannerList.value.length > 0) {
       swiperIdx.value = index
    }
 };
 
-// const GetGameList = async () => {
-//    // try {
-//    //    gameVoList.value = [];
-//    //    const DataList = await GetHomeGame(params.value);
-//    //    console.log(DataList);
-//    //    const { data } = DataList;
-//    //    if (data.page > page) {
-//    //       page.value += 1;
-//    //    } else {
-//    //       finished.value = true;
-//    //    }
-//    //    gameVoList.value.push(...data.homeType[homeType]);
-//    // } catch (error) {
-//    //    console.error(error);
-//    // } finally {
-//    //    isLoading.value = false;
-//    //    refreshing.value = false;
-//    // }
-// };
 
-// const GetGameList = async () => {
-//    try {
-//       const res = await GetHomeGame(params.value);
-//       console.log(res);
-//       if (res[2].) { 
+const GetGameList = async () => {
+   try {
+      let res = await GetHomeGame(params.value);
+      let array = res[2].gameVoList
 
-//       }
-//    } catch (error) {
-//       console.log(1);
-//    }
-// }
+      if (array.length == 8) {
+         params.value.page++
+      } else {
+         finished.value = true
+      }
 
-const onRefresh = () => {
-   // isLoading.value = true;
-   // GetGameList();
-};
+      array.map(item => {
+         gameList.value.push(item)
+      })
+      isLoading.value = false
+   } catch (error) {
+      console.log(1);
+   }
+}
 
 const onLoad = () => {
-   // GetGameList();
+   GetGameList();
 };
 
 //点击游戏
-const Islogin = (data) => {
+const Skip = (data) => {
    currentData.value = data
+   const gameId = gameBannerList.value[swiperIdx.value]?.id
    if (localStorage.getItem('userId')) {
-      window.location.href = gameBannerList.value[swiperIdx.value]?.gamePath + `?gameID=${gameBannerList.value[swiperIdx.value]?.id}&userID=${localStorage.getItem('userId')}`
+      GetBehaviour({
+         id: localStorage.getItem('userId'),
+         gameId: gameId,
+         clickTypeId: 6
+      })
+      window.location.href = gameBannerList.value[swiperIdx.value]?.gamePath + `?gameID=${gameId}&userID=${localStorage.getItem('userId')}`
+   } else {
+      isShowDialog.value = true
+   }
+}
+
+const Skip2 = (data) => {
+   currentData.value = data
+   const gameId = data?.id
+   if (localStorage.getItem('userId')) {
+      GetBehaviour({
+         id: localStorage.getItem('userId'),
+         gameId: gameId,
+         clickTypeId: 6
+      })
+      window.location.href = data?.gamePath + `?gameID=${gameId}&userID=${localStorage.getItem('userId')}`
    } else {
       isShowDialog.value = true
    }
@@ -95,47 +102,52 @@ const Islogin = (data) => {
       <div class="box-up">
          <div class="header">
             <div class="title">recommend</div>
-            <div class="avatar"><img :src="userAvatar==''?'../assets/image/dd.webp'||userAvatar" alt=""></div>
+            <div class="avatar"><img :src="userAvatar ? userAvatar : defaultavatar" alt="">
+            </div>
          </div>
          <div class="introduce">
             <div>
                <div class="tit">{{ gameBannerList[swiperIdx]?.gameName }}</div>
                <div class="txt">{{ gameBannerList[swiperIdx]?.gameDesc }}</div>
             </div>
-            <div class="btn" @click="Islogin(gameBannerList[swiperIdx])">
+            <div class="btn" @click="Skip(gameBannerList[swiperIdx])">
                <div class="btntext">
                   Enter
                </div>
             </div>
          </div>
          <div class="banner">
-            <van-swipe class="my-swipe" :loop="false" :width="280" :show-indicators="false" @change="onChange">
-               <van-swipe-item v-for="(item, index) in gameBannerList" :key="index"><img :src="item.gameImg"
-                     alt=""></van-swipe-item>
+            <van-swipe class="my-swipe" :loop="false" :width="296" :show-indicators="false" @change="onChange">
+               <van-swipe-item v-for="(item, index) in gameBannerList" :key="index">
+                  <div class="banner-img">
+                     <img :src="item.gameImg" alt="">
+                  </div>
+               </van-swipe-item>
             </van-swipe>
          </div>
       </div>
       <div class="gamelist">
          <div class="title">Everyone is playing</div>
          <div class="centent">
-            <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-               <van-list v-model:loading="isLoading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-                  <div class="item" v-for="(item, index) in gameList" :key="index">
-                     <div class="master-map"><img :src="item.gameLogo" alt=""></div>
-                     <div class="details">
-                        <div class="tit">{{ item.gameName }}</div>
-                        <div class="desc">
-                           <img src="../assets/image/dd.webp" alt="">
-                           <img src="../assets/image/dd.webp" alt="">
-                           <img src="../assets/image/dd.webp" alt="">
-                           <span>9527friends are playing</span>
-                        </div>
-                     </div>
-                     <div class="enter">
-                        <div class="text"><a :href="item.gamePath">Enter</a></div>
+
+            <van-list v-model:loading="isLoading" :finished="finished" :immediate-check="true" finished-text="没有更多了"
+               @load="onLoad" :offset="30">
+               <div class="item" v-for="(item, index) in gameList" :key="index">
+                  <div class="master-map"><img :src="item.gameLogo" alt=""></div>
+                  <div class="details">
+                     <div class="tit">{{ item.gameName }}</div>
+                     <div class="desc">
+                        <img src="@assets/image/dd.webp" alt="">
+                        <img src="@assets/image/dd.webp" alt="">
+                        <img src="@assets/image/dd.webp" alt="">
+                        <span>{{getRandomInt()}}friends are playing</span>
                      </div>
                   </div>
-               </van-list></van-pull-refresh>
+                  <div class="enter" @click="Skip2(item)">
+                     <div class="text">Enter</div>
+                  </div>
+               </div>
+            </van-list>
          </div>
       </div>
       <Dialog v-model:show="isShowDialog" :currentData="currentData"></Dialog>
@@ -218,17 +230,25 @@ const Islogin = (data) => {
 
       .banner {
          .van-swipe {
-            margin: 0 -8px;
+            // margin-left: -8px;
          }
 
-         .van-swipe-item {
-            margin: 0 8px;
+         .van-swipe__track>div:nth-child(1) {
+            margin-left: -8px;
          }
 
-         img {
-            width: 280px;
-            height: 128px;
+         .banner-img {
+            padding: 0 8px;
+
+            img {
+               width: 100%;
+               height: 128px;
+               border-radius: 8px;
+            }
+
          }
+
+
       }
    }
 

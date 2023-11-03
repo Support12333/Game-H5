@@ -1,8 +1,9 @@
 <script setup>
-import "vant/lib/toast/style/index"
 import { ref, reactive, onBeforeUnmount, defineProps, watch, defineEmits } from 'vue';
-import { showToast } from 'vant'
+import { useI18n } from "vue-i18n";
+import { showFailToast } from 'vant'
 import { SendInfo, RegisterUser, LoginUser } from '@/api/user'
+import "vant/lib/toast/style/index"
 const showornot = ref("password");
 
 const params = reactive({
@@ -24,6 +25,9 @@ const props = defineProps({
         default: () => { }
     }
 })
+
+// 获取i18n对象
+const i18n = useI18n();
 
 const Show = ref(props.show);
 
@@ -55,17 +59,19 @@ const countDown = reactive({
 
 //验证码是否显示
 const code = ref(false)
-// const Iscode = ref(false)
+const isAccount = ref(false)
+const isPassword = ref(false)
 let IsCountDown = ref(false)
 let checked = ref(false)
 let iSopen = ref(false)
 const isActive = ref(1)
 //账户类型
-// const loginType = ref('')
+const loginType = ref(1)
+const accountTip = ref(i18n.t('accounttxt'))
 
 //点击切换登陆 
 const login = () => {
-    console.log('登陆');
+    accountTip.value = 'Enter mobile phone number/email'
     code.value = false
     isActive.value = 1
     //切换校验规则
@@ -73,7 +79,7 @@ const login = () => {
 
 //点击切换注册
 const register = () => {
-    console.log('注册');
+    accountTip.value = '例+1 88888888或123456@qq.com'
     code.value = true
     isActive.value = 2
     //切换校验规则
@@ -98,64 +104,90 @@ const open = () => {
         showornot.value = 'text'
     }
 }
+//删除验证码
+const codeDelete = () => {
+    params.code = ''
+}
 
 //是否是邮箱
-// const validateAccount = () => {
-//     if (params.account.includes('@')) {
-//         if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(params.account)) {
-//             Iscode.value = false
-//             return showToast('请输入正确的邮箱！')
-//         }
-//         loginType.value = 2
-//     } else {
-//         loginType.value = 1
-//     }
-//     Iscode.value = true
-// }
+const validateAccount = () => {
+    if (!params.account) {
+        showFailToast("请输入账号！")
+        return
+    }
+    if (params.account.includes('@')) {
+        if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(params.account)) {
+            isAccount.value = false
+            showFailToast('请输入正确的邮箱！')
+            return
+        }
+        loginType.value = 2
+    } else {
+        loginType.value = 1
+    }
+    isAccount.value = true
+}
+//校验密码
+const validatePassword = () => {
+    console.log(params.password);
+    if (!params.password) {
+        showFailToast('请输入密码！')
+        return
+    }
+    if (!/^[a-zA-Z0-9]{3,16}$/.test(params.password)) {
+        isPassword.value = false
+        showFailToast('密码必须是字母或数字，且长度在3-16之间！')
+        return
+    } else {
+        isPassword.value = true
+    }
+}
 
 //获取验证码
 const sendVerifyCode = () => {
-    if (!params.account) {
-        showToast("请输入账号！")
-
-    } else {
-        // validateAccount()
-        // console.log(111);
-        SendInfo({
-            account: params.account,
-            type: 1,
-            languageType: 1
-        }).then(() => {
-            IsCountDown.value = true
-            countDown.time = 30;
-            countDown.interval = setInterval(() => {
-                if (countDown.time == 0) {
-                    clearInterval(countDown.interval);
-                    countDown.interval = null;
-                    IsCountDown.value = false
-                } else {
-                    countDown.time--;
-                }
-            }, 1000);
-        })
+    validateAccount()
+    if (!isAccount.value) {
+        return
     }
-
+    SendInfo({
+        account: params.account,
+        type: loginType.value,
+        languageType: props.currentData.languageId
+    }).then(() => {
+    })
+    IsCountDown.value = true
+    countDown.time = 30;
+    countDown.interval = setInterval(() => {
+        if (countDown.time == 0) {
+            clearInterval(countDown.interval);
+            countDown.interval = null;
+            IsCountDown.value = false
+        } else {
+            countDown.time--;
+        }
+    }, 1000);
 }
 
 //提交登录注册
-const onSubmit = (values) => {
-    console.log(props.currentData);
-    if (!checked.value) {
-        return showToast('请勾选隐私政策！');
+const onSubmit = () => {
+    validateAccount()
+    validatePassword()
+    if (!isAccount.value) {
+        return
     }
-    console.log(123);
+    if (!isPassword.value) {
+        return
+    }
+    if (!checked.value) {
+        return showFailToast('请勾选隐私政策！');
+    }
     //1 为登入 2为注册
     if (isActive.value == 1) {
         LoginUser({
             account: params.account,
             password: params.password,
             verifyCode: '',
-            signTypeId: 1,
+            signTypeId: loginType.value,
             gameId: props.currentData.id,
             carrierId: props.currentData.carrierId
         }).then(res => {
@@ -163,25 +195,27 @@ const onSubmit = (values) => {
             localStorage.setItem("userId", res.id)
             localStorage.setItem("userImg", res.userImg)
             Show.value = false
-            console.log(res, '登陆成功');
         })
-        console.log('login.....')
     } else if (isActive.value == 2) {
+        if (!params.code) {
+            showFailToast('请输入验证码！')
+            return
+        }
         RegisterUser({
             account: params.account,
             password: params.password,
             verifyCode: params.code,
-            signTypeId: 1,
+            signTypeId: loginType.value,
             gameId: props.currentData.id,
             carrierId: props.currentData.carrierId
         }).then(res => {
+            localStorage.setItem("gameData", JSON.stringify(props.currentData))
+            localStorage.setItem("userId", res.id)
+            localStorage.setItem("userImg", res.userImg)
             Show.value = false
-            console.log(res);
         })
-        console.log('Registed.....')
     }
 
-    console.log('submit', values);
 };
 
 // 销毁前判断定时器是否存在，存在则停止
@@ -198,7 +232,7 @@ onBeforeUnmount(() => {
         <van-dialog v-model:show="Show" class="main" :showConfirmButton="false" :showCancelButton="false">
             <div class="centent">
                 <div class="title">
-                    <span @click="login" :class="isActive == 1 ? 'active' : ''">Login</span>
+                    <span @click="login" :class="isActive == 1 ? 'active' : ''">{{$t('login')}}</span>
                     <span @click="register" :class="isActive == 2 ? 'active' : ''">Register</span>
                 </div>
                 <van-form @submit="onSubmit" class="form">
@@ -210,7 +244,7 @@ onBeforeUnmount(() => {
                                 <span>+{{ params.area_code }}</span>
                                 <van-icon :name="isAreaCode ? 'arrow-up' : 'arrow-down'" size="0.56rem" />
                             </div> -->
-                            <van-field name="账户" v-model="params.account" placeholder="Enter mobile phone number/email" />
+                            <van-field name="账户" v-model="params.account" :placeholder="accountTip" />
                         </div>
 
                         <div v-if="code">
@@ -218,8 +252,8 @@ onBeforeUnmount(() => {
                             <div class="code">
                                 <van-field name="验证码" v-model="params.code" />
 
-                                <div class="countdown" v-if="IsCountDown"><img src="../../assets/icon/close.png"
-                                        alt="">Resend
+                                <div class="countdown" v-if="IsCountDown"><img @click="codeDelete"
+                                        src="../../assets/icon/close.png" alt="">Resend
                                     ({{ countDown.time }}s)
                                 </div>
                                 <div class="tips" v-else @click="sendVerifyCode">get verification code</div>
@@ -433,7 +467,8 @@ onBeforeUnmount(() => {
     }
 }
 
-.particulars-detail-popup {
-    background: rgba(0, 0, 0, 0.7) !important;
+::v-deep .van-toast--text {
+    background: red !important;
+    z-index: 10000 !important;
 }
 </style>

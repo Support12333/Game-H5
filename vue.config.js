@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const { defineConfig } = require('@vue/cli-service')
-const { VantResolver } = require('unplugin-vue-components/resolvers');
-const ComponentsPlugin = require('unplugin-vue-components/webpack');
+// const { VantResolver } = require('unplugin-vue-components/resolvers');
+// const ComponentsPlugin = require('unplugin-vue-components/webpack');
 const path = require('path');
 const resolve = (dir) => path.join(__dirname, dir);
 
@@ -10,9 +10,9 @@ module.exports = defineConfig({
   configureWebpack: {
     // 配置vant组件按需加载
     plugins: [
-      ComponentsPlugin({
-        resolvers: [VantResolver()],
-      }),
+      // ComponentsPlugin({
+      //   resolvers: [VantResolver()],
+      // }),
 
       // 配置全局对象或方法
       new webpack.ProvidePlugin({
@@ -32,6 +32,7 @@ module.exports = defineConfig({
       .set('@views', resolve('src/views'))
       .set('@utils', resolve('src/utils'))
       .set('@api', resolve('src/api'))
+      .set('@i18n', resolve('src/i18n'))
 
     if (process.env.NODE_ENV === "production") {
       // 去除打印和注释输出

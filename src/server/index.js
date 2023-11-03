@@ -18,7 +18,6 @@ fetch.interceptors.response.use(
         return Promise.reject(new Error(msg))
     },
     error => {
-        console.log(error,'拦截器');
         showFailToast(error.msg)
         return Promise.reject(error)
     }
