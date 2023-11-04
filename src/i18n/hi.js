@@ -3,7 +3,7 @@ export default {
     register: 'पंजीकरण करवाना',
     account: 'खाता',
     accounttxt:'मोबाइल फ़ोन नंबर/ईमेल दर्ज करें',
-    accounttxt2:'उदाहरण: +1 88888888 या 123456@qq.com',
+    accounttxt2:"उदाहरण: +1 88888888 या 123456{'@'}qq.com",
     captcha: 'कॅप्चा',
     codetxt: 'सत्यापन कोड प्राप्त करें',
     resend: 'पुन: भेजें',

@@ -9,6 +9,8 @@ const i18n = createI18n({
   // 设置语言环境
   locale: lang,
   fallbackLocale: lang,
+  legacy:false,
+
   // 设置语言环境信息
   messages: {
     [lang]: require(`./${lang}.js`).default
@@ -47,6 +49,7 @@ export const loadLanguageAsync = async lang => {
 
   // 如果尚未加载语言
   const messages = await import(`@i18n/${lang}.js`)
+  console.log(messages)
   i18n.setLocaleMessage(lang, messages.default)
   loadedLanguages.push(lang)
   return setI18nLanguage(lang)

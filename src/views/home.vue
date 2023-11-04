@@ -9,7 +9,7 @@ const currentData = ref({})
 //登陆后获取的头像
 const userAvatar = ref('')
 //默认头像
-const defaultavatar=ref(require('@assets/image/dd.webp'))
+const defaultavatar=ref(require('@assets/image/defaultavatar.png'))
 const gameList = ref([])
 const gameBannerList = ref([])
 const swiperIdx = ref(0)
@@ -101,7 +101,7 @@ const Skip2 = (data) => {
    <div class="home">
       <div class="box-up">
          <div class="header">
-            <div class="title">recommend</div>
+            <div class="title">{{$t('recommend')}}</div>
             <div class="avatar"><img :src="userAvatar ? userAvatar : defaultavatar" alt="">
             </div>
          </div>
@@ -112,7 +112,7 @@ const Skip2 = (data) => {
             </div>
             <div class="btn" @click="Skip(gameBannerList[swiperIdx])">
                <div class="btntext">
-                  Enter
+                  {{$t('recommend')}}
                </div>
             </div>
          </div>
@@ -127,10 +127,10 @@ const Skip2 = (data) => {
          </div>
       </div>
       <div class="gamelist">
-         <div class="title">Everyone is playing</div>
+         <div class="title">{{$t('tit')}}</div>
          <div class="centent">
 
-            <van-list v-model:loading="isLoading" :finished="finished" :immediate-check="true" finished-text="没有更多了"
+            <van-list v-model:loading="isLoading" :finished="finished" :immediate-check="true" :finished-text="$t('desc')"
                @load="onLoad" :offset="30">
                <div class="item" v-for="(item, index) in gameList" :key="index">
                   <div class="master-map"><img :src="item.gameLogo" alt=""></div>
@@ -140,11 +140,11 @@ const Skip2 = (data) => {
                         <img src="@assets/image/dd.webp" alt="">
                         <img src="@assets/image/dd.webp" alt="">
                         <img src="@assets/image/dd.webp" alt="">
-                        <span>{{getRandomInt()}}friends are playing</span>
+                        <span>{{getRandomInt()}}{{$t('txt')}}</span>
                      </div>
                   </div>
                   <div class="enter" @click="Skip2(item)">
-                     <div class="text">Enter</div>
+                     <div class="text">{{$t('recommend')}}</div>
                   </div>
                </div>
             </van-list>
@@ -159,8 +159,8 @@ const Skip2 = (data) => {
    background-color: rgba(245, 245, 245, 1);
 
    .box-up {
-      padding: 16px 16px 20px;
-      border-radius: 0 0 8px 8px;
+      padding: .64rem .64rem .8rem;
+      border-radius: 0 0 .32rem .32rem;
       background: rgba(255, 255, 255, 1);
 
       .header {
@@ -169,15 +169,15 @@ const Skip2 = (data) => {
 
          .title {
             font-family: PingFang SC;
-            font-size: 24px;
+            font-size: .96rem;
             color: rgba(0, 0, 0, 1);
             font-weight: 600;
          }
 
          .avatar {
             img {
-               width: 34px;
-               height: 34px;
+               width: 1.36rem;
+               height: 1.36rem;
                border-radius: 50%;
             }
          }
@@ -187,63 +187,57 @@ const Skip2 = (data) => {
          display: flex;
          justify-content: space-between;
          align-items: center;
-         padding: 16px 0;
+         padding: .64rem 0;
 
          .tit {
             font-family: PingFang SC;
-            font-size: 18px;
+            font-size: .72rem;
             color:
                rgba(0, 0, 0, 1);
             font-weight: 400;
-            line-height: 24px;
+            line-height: .96rem;
          }
 
          .txt {
             font-family: PingFang SC;
-            font-size: 12px;
+            font-size: .48rem;
             color: rgba(100, 101, 102, 1);
             font-weight: 400;
-            line-height: 16px;
-            margin-top: 6px;
+            line-height: .64rem;
+            margin-top: .24rem;
          }
 
          .btn {
-            width: 76px;
-            height: 32px;
-            border-radius: 4px;
+            // width: 76px;
+            padding: 0 .32rem;
+            height: 1.28rem;
+            border-radius: .16rem;
             background: linear-gradient(180deg, #C3CCF6 -89.02%, #3868FF 99%);
 
             .btntext {
                font-family: PingFang SC;
-               font-size: 14px;
-               line-height: 32px;
+               font-size: .56rem;
+               line-height: 1.28rem;
                text-align: center;
                font-weight: 600;
                color: rgba(255, 255, 255, 1);
-
-               a {
-                  display: block;
-               }
             }
          }
       }
 
       .banner {
-         .van-swipe {
-            // margin-left: -8px;
-         }
 
          .van-swipe__track>div:nth-child(1) {
-            margin-left: -8px;
+            margin-left: -0.32rem;
          }
 
          .banner-img {
-            padding: 0 8px;
+            padding: 0 .32rem;
 
             img {
                width: 100%;
-               height: 128px;
-               border-radius: 8px;
+               height: 5.12rem;
+               border-radius: .32rem;
             }
 
          }
@@ -253,16 +247,16 @@ const Skip2 = (data) => {
    }
 
    .gamelist {
-      padding: 16px;
-      margin-top: 12px;
-      border-radius: 8px 8px 0 0;
+      padding: .64rem;
+      margin-top: .48rem;
+      border-radius: .32rem .32rem 0 0;
       background: rgba(255, 255, 255, 1);
 
       .title {
          font-family: PingFang SC;
-         font-size: 20px;
+         font-size: .8rem;
          font-weight: 600;
-         line-height: 28px;
+         line-height: 1.12rem;
          color: rgba(26, 26, 26, 1);
       }
 
@@ -271,70 +265,67 @@ const Skip2 = (data) => {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: .32rem 0;
 
             .master-map {
                img {
-                  width: 60px;
-                  height: 60px;
-                  border-radius: 12px;
+                  width: 2.4rem;
+                  height: 2.4rem;
+                  border-radius: .48rem;
                }
             }
 
             .details {
-               padding: 0 16px 0 8px;
+               padding: 0 .64rem 0 .32rem;
 
                .tit {
                   font-family: PingFang SC;
-                  font-size: 14px;
+                  font-size: .56rem;
                   color: rgba(26, 26, 26, 1);
                   font-weight: 400;
-                  line-height: 18px;
+                  line-height: .72rem;
                }
 
                .desc {
                   display: flex;
-                  margin-top: 10px;
+                  margin-top: .4rem;
 
                   img {
-                     width: 16px;
-                     height: 16px;
+                     width: .64rem;
+                     height: .64rem;
                      border-radius: 50%;
                   }
 
                   >img+img {
-                     margin-left: -4px;
+                     margin-left: -0.16rem;
                   }
 
                   span {
                      font-family: PingFang SC;
-                     font-size: 12px;
+                     font-size: .48rem;
                      font-weight: 400;
-                     line-height: 16px;
+                     line-height: .64rem;
                      color: rgba(150, 151, 153, 0.5333);
-                     margin-left: 4px;
+                     margin-left: .16rem;
                   }
                }
             }
 
             .enter {
-               width: 68px;
-               height: 32px;
-               border: 1px solid rgba(56, 104, 255, 1);
-               border-radius: 4px;
+               // width: 68px;
+               padding: 0 .32rem;
+               height: 1.28rem;
+               border: .04rem solid rgba(56, 104, 255, 1);
+               border-radius: .16rem;
 
                .text {
                   text-align: center;
                   font-family: ABeeZee;
-                  font-size: 14px;
-                  line-height: 32px;
+                  font-size: .56rem;
+                  line-height: 1.28rem;
                   font-weight: 400;
                   color:
                      rgba(56, 104, 255, 1);
-
-                  a {
-                     display: block;
-                  }
                }
             }
          }

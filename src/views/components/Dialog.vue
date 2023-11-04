@@ -67,11 +67,11 @@ let iSopen = ref(false)
 const isActive = ref(1)
 //账户类型
 const loginType = ref(1)
-const accountTip = ref(i18n.t('accounttxt'))
+const accountTip = ref(i18n.t("accounttxt"))
 
 //点击切换登陆 
 const login = () => {
-    accountTip.value = 'Enter mobile phone number/email'
+    accountTip.value = i18n.t("accounttxt")
     code.value = false
     isActive.value = 1
     //切换校验规则
@@ -79,7 +79,7 @@ const login = () => {
 
 //点击切换注册
 const register = () => {
-    accountTip.value = '例+1 88888888或123456@qq.com'
+    accountTip.value = i18n.t("accounttxt2")
     code.value = true
     isActive.value = 2
     //切换校验规则
@@ -112,13 +112,13 @@ const codeDelete = () => {
 //是否是邮箱
 const validateAccount = () => {
     if (!params.account) {
-        showFailToast("请输入账号！")
+        showFailToast(i18n.t("tip"))
         return
     }
     if (params.account.includes('@')) {
         if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(params.account)) {
             isAccount.value = false
-            showFailToast('请输入正确的邮箱！')
+            showFailToast(i18n.t("tip2"))
             return
         }
         loginType.value = 2
@@ -131,12 +131,12 @@ const validateAccount = () => {
 const validatePassword = () => {
     console.log(params.password);
     if (!params.password) {
-        showFailToast('请输入密码！')
+        showFailToast(i18n.t("tip3"))
         return
     }
     if (!/^[a-zA-Z0-9]{3,16}$/.test(params.password)) {
         isPassword.value = false
-        showFailToast('密码必须是字母或数字，且长度在3-16之间！')
+        showFailToast(i18n.t("tip4"))
         return
     } else {
         isPassword.value = true
@@ -179,7 +179,7 @@ const onSubmit = () => {
         return
     }
     if (!checked.value) {
-        return showFailToast('请勾选隐私政策！');
+        return showFailToast(i18n.t("tip5"));
     }
     //1 为登入 2为注册
     if (isActive.value == 1) {
@@ -198,7 +198,7 @@ const onSubmit = () => {
         })
     } else if (isActive.value == 2) {
         if (!params.code) {
-            showFailToast('请输入验证码！')
+            showFailToast(i18n.t("tip6"))
             return
         }
         RegisterUser({
@@ -233,12 +233,12 @@ onBeforeUnmount(() => {
             <div class="centent">
                 <div class="title">
                     <span @click="login" :class="isActive == 1 ? 'active' : ''">{{$t('login')}}</span>
-                    <span @click="register" :class="isActive == 2 ? 'active' : ''">Register</span>
+                    <span @click="register" :class="isActive == 2 ? 'active' : ''">{{$t('register')}}</span>
                 </div>
                 <van-form @submit="onSubmit" class="form">
                     <van-cell-group inset style="margin: 0;">
 
-                        <div class="label">account</div>
+                        <div class="label">{{$t('account')}}</div>
                         <div class="account">
                             <!-- <div class="area" @click.stop="isAreaCode = true">
                                 <span>+{{ params.area_code }}</span>
@@ -248,29 +248,29 @@ onBeforeUnmount(() => {
                         </div>
 
                         <div v-if="code">
-                            <div class="label">Captcha</div>
+                            <div class="label">{{$t('captcha')}}</div>
                             <div class="code">
                                 <van-field name="验证码" v-model="params.code" />
 
                                 <div class="countdown" v-if="IsCountDown"><img @click="codeDelete"
-                                        src="../../assets/icon/close.png" alt="">Resend
+                                        src="../../assets/icon/close.png" alt="">{{$t('resend')}}
                                     ({{ countDown.time }}s)
                                 </div>
-                                <div class="tips" v-else @click="sendVerifyCode">get verification code</div>
+                                <div class="tips" v-else @click="sendVerifyCode">{{$t('codetxt')}}</div>
                             </div>
                         </div>
 
-                        <div class="label">password</div>
+                        <div class="label">{{$t('password')}}</div>
                         <div class="pwd">
-                            <van-field :type="showornot" name="密码" v-model="params.password" placeholder="enter password" />
+                            <van-field :type="showornot" name="密码" v-model="params.password" :placeholder="$t('passwordtxt')" />
                             <img @click="open" src="../../assets/icon/password_open.png" alt="" v-if="iSopen">
                             <img @click="open" src="../../assets/icon/password_closed.png" alt="" v-else>
                         </div>
 
                     </van-cell-group>
-                    <div style="margin: 24px 0;">
+                    <div style="margin: .96rem 0;">
                         <van-button round block type="primary" native-type="submit">
-                            Login
+                            {{isActive==1?$t('login'):$t('register')}}
                         </van-button>
                     </div>
                 </van-form>
@@ -279,8 +279,7 @@ onBeforeUnmount(() => {
                     <img @click="check" src="@/assets/icon/icon_picture_choose.png" alt="" v-if="checked">
                     <img @click="check" src="@/assets/icon/icon_picture_selected.png" alt="" v-else>
 
-                    <div class="txt">I have read and agreed to the <span>"User Service Agreement"</span> and <span>"Privacy
-                            Policy"</span></div>
+                    <div class="txt">{{$t('privacy')}} <span><router-link to="/policy">"{{$t('privacy2')}}"</router-link></span> {{$t('privacy3')}} <span><router-link to="/policy">"{{$t('privacy4')}}"</router-link></span></div>
                 </div>
             </div>
         </van-dialog>
@@ -292,17 +291,17 @@ onBeforeUnmount(() => {
 .main {
 
     .centent {
-        padding: 24px 16px;
+        padding: .96rem .64rem;
 
         .title {
             display: flex;
             justify-content: space-between;
             font-family: PingFang SC;
-            font-size: 20px;
+            font-size: .8rem;
             font-weight: 600;
-            line-height: 26px;
+            line-height: 1.04rem;
             color: rgba(100, 101, 102, 1);
-            padding: 0 24px;
+            padding: 0 .96rem;
 
             .active {
                 position: relative;
@@ -315,26 +314,26 @@ onBeforeUnmount(() => {
                 position: absolute;
                 left: 50%;
                 transform: translateX(-50%);
-                bottom: -6px;
-                width: 24px;
-                height: 4px;
-                margin-top: 6px;
-                border-radius: 50px;
+                bottom: -0.24rem;
+                width: .96rem;
+                height: .16rem;
+                margin-top: .24rem;
+                border-radius: 2rem;
                 background: rgba(56, 104, 255, 1);
                 transition: all 0.3s ease-out;
             }
         }
 
         ::v-deep .form {
-            margin-top: 6px;
+            margin-top: .24rem;
 
             .label {
                 font-family: PingFang SC;
-                font-size: 18px;
+                font-size: .72rem;
                 font-weight: 400;
-                line-height: 25px;
+                line-height: 1rem;
                 color: rgba(26, 26, 26, 1);
-                margin: 16px 0 12px;
+                margin: .64rem 0 .48rem;
             }
 
             .account {
@@ -342,14 +341,10 @@ onBeforeUnmount(() => {
 
                 .area {
                     position: absolute;
-                    left: 8px;
-                    top: 14px;
+                    left: .32rem;
+                    top: .56rem;
                     z-index: 1;
                 }
-
-                // input {
-                //     padding: 16px 12px 16px 40px !important;
-                // }
             }
 
             .van-cell {
@@ -357,23 +352,23 @@ onBeforeUnmount(() => {
                 margin: 0;
 
                 input {
-                    height: 48px;
+                    height: 1.92rem;
                     font-family: PingFang SC;
-                    font-size: 14px;
+                    font-size: .56rem;
                     font-weight: 500;
-                    line-height: 16px;
+                    line-height: .64rem;
                     color: rgba(0, 0, 0, 1);
                     background: rgba(248, 250, 255, 1);
                     border: 0;
-                    padding: 16px 12px;
-                    border-radius: 6px;
+                    padding: .64rem .48rem;
+                    border-radius: .24rem;
                 }
 
                 input::-webkit-input-placeholder {
                     font-family: PingFang SC;
-                    font-size: 14px;
+                    font-size: .56rem;
                     font-weight: 400;
-                    line-height: 16px;
+                    line-height: .64rem;
                     color: rgba(199, 202, 211, 1);
 
                 }
@@ -388,30 +383,30 @@ onBeforeUnmount(() => {
 
                 .tips {
                     position: absolute;
-                    right: 12px;
-                    top: 16px;
+                    right: .48rem;
+                    top: .64rem;
                     font-family: PingFang SC;
-                    font-size: 14px;
+                    font-size: .56rem;
                     font-weight: 500;
-                    line-height: 16px;
+                    line-height: .64rem;
                     color: rgba(56, 104, 255, 1);
                 }
 
                 .countdown {
                     position: absolute;
-                    right: 12px;
-                    top: 16px;
+                    right: .48rem;
+                    top: .64rem;
                     display: flex;
                     align-items: center;
                     font-family: PingFang SC;
-                    font-size: 14px;
-                    line-height: 16px;
+                    font-size: .56rem;
+                    line-height: .64rem;
                     color: rgba(199, 202, 211, 1);
 
                     >img {
-                        width: 14px;
-                        height: 14px;
-                        margin-right: 16px;
+                        width: .56rem;
+                        height: .56rem;
+                        margin-right: .64rem;
                     }
                 }
             }
@@ -422,20 +417,20 @@ onBeforeUnmount(() => {
 
                 >img {
                     position: absolute;
-                    right: 12px;
-                    top: 15px;
-                    width: 18px;
-                    height: 18px;
+                    right: .48rem;
+                    top: .6rem;
+                    width: .72rem;
+                    height: .72rem;
                 }
             }
 
             .van-button {
                 font-family: PingFang SC;
-                font-size: 18px;
+                font-size: .72rem;
                 font-weight: 600;
-                line-height: 24px;
+                line-height: .96rem;
                 color: rgba(255, 255, 255, 1);
-                border-radius: 6px;
+                border-radius: .24rem;
                 border: 0;
                 background: linear-gradient(198.03deg, #C3CCF6 -89.02%, #3868FF 99%);
 
@@ -447,17 +442,17 @@ onBeforeUnmount(() => {
             display: flex;
 
             >img {
-                width: 14px;
-                height: 14px;
+                width: .56rem;
+                height: .56rem;
             }
 
             .txt {
                 font-family: PingFang SC;
-                font-size: 12px;
+                font-size: .48rem;
                 font-weight: 400;
-                line-height: 16px;
+                line-height: .64rem;
                 color: rgba(150, 151, 153, 1);
-                margin-left: 6px;
+                margin-left: .24rem;
 
                 >span {
                     color: rgba(56, 104, 255, 1);

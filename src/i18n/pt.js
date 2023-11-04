@@ -3,7 +3,7 @@ export default {
     register: 'Registro',
     account: 'conta',
     accounttxt:'Digite o número do celular/e-mail',
-    accounttxt2:'Exemplo: +1 88888888 ou 123456@qq.com',
+    accounttxt2:"Exemplo: +1 88888888 ou 123456{'@'}qq.com",
     captcha: 'CAPTCHA',
     codetxt: 'obter código de verificação',
     resend: 'Reenviar',
